@@ -1,5 +1,6 @@
 // app.js
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000; // Utilisez le port spécifié dans les variables d'environnement ou 3000 par défaut
 
@@ -10,7 +11,7 @@ const apiRoutes = require('./routes/apiRoutes');
 app.use(express.json());
 
 // Middleware pour gérer les en-têtes CORS (si nécessaire)
-// app.use(cors());
+app.use(cors());
 
 // Utilisez les routes définies dans apiRoutes.js
 app.use('/api', apiRoutes);
