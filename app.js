@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose'); 
 const cors = require('cors');
 const app = express();
-const userRoutes = require('./routes/userRoutes');
+const router = express.Router();
 const port = process.env.PORT || 3000; // Utilisez le port spécifié dans les variables d'environnement ou 3000 par défaut
 
 const mongoString = process.env.DATABASE_URL;
@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(cors());
 
 // Utilisez les routes définies dans apiRoutes.js
-app.use('/api', apiRoutes);
+app.use('/api', apiRoutes)
 
 // Gestionnaire d'erreurs pour les routes non trouvées
 app.use((req, res, next) => {
