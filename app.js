@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose'); 
 const cors = require('cors');
 const app = express();
+const userRoutes = require('./routes/userRoutes');
 const port = process.env.PORT || 3000; // Utilisez le port spécifié dans les variables d'environnement ou 3000 par défaut
 
 const mongoString = process.env.DATABASE_URL;
@@ -48,3 +49,5 @@ app.use((err, req, res, next) => {
 app.listen(port, '0.0.0.0', function() { 
     console.log(`Serveur démarré sur le port ${port}`);
 });
+
+module.exports = router;
