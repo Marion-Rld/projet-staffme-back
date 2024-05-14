@@ -54,4 +54,3 @@ exports.deleteSkillLevel = async (req, res) => {
         res.status(500).send(error);
     }
 };
-v
