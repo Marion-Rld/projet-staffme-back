@@ -26,7 +26,9 @@ const apiRoutes = require('./src/api/main/apiRoutes');
 app.use(express.json());
 
 // Middleware pour gérer les en-têtes CORS (si nécessaire)
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
 
 // Utilisez les routes définies dans apiRoutes.js
 app.use('/api', apiRoutes)
