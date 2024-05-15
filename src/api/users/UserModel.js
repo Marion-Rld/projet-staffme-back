@@ -9,12 +9,12 @@ const skillSchema = new Schema({
 
 const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
-    role: { type: String, required: true },
+    role: { type: String, required: true, default: 'user'},
     lastName: { type: String, required: true },
     firstName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phoneNumber: { type: String, required: true },
-    job: { type: String, required: true },
+    phoneNumber: { type: String, required: false },
+    job: { type: String, required: false },
     gender: { type: String, required: false },
     postalAddress: { type: String, required: false },
     skills: { type: [skillSchema], required: false },
