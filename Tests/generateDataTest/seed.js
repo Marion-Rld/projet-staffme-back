@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../../src/api/users/UserModel');
 const Team = require('../../src/api/teams/TeamModel');
 const Skill = require('../../src/api/skills/SkillModel');
-const SkillLevel = require('../../src/api/skill-levels/skillLevelModel');
+const SkillLevel = require('../../src/api/skill-levels/SkillLevelModel');
 const Project = require('../../src/api/projects/ProjectModel');
 const Document = require('../../src/api/documents/DocumentModel');
 require('dotenv').config( { path: './.env' } );
