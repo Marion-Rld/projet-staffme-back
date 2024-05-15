@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const teamsController = require('../controllers/teamsController');
+const teamsController = require('./teamsController');
 
 // Route pour la racine de l'API (GET)
 router.get('/', (req, res) => {

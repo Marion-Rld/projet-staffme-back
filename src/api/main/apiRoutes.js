@@ -1,10 +1,10 @@
 const express = require('express');
-const userRoutes = require('./userRoutes');
-const skillRoutes = require('./skillRoutes');
-const teamRoutes = require('./teamRoutes');
-const projectRoutes = require('./projectRoutes');
-const documentRoutes = require('./documentRoutes');
-const skillLevelRoutes = require('./skillLevelRoutes');
+const userRoutes = require('../users/userRoutes');
+const skillRoutes = require('../skills/skillRoutes');
+const teamRoutes = require('../teams/teamRoutes');
+const projectRoutes = require('../projects/projectRoutes');
+const documentRoutes = require('../documents/documentRoutes');
+const skillLevelRoutes = require('../skill-levels/skillLevelRoutes');
 const router = express.Router();
 
 router.use('/users-api', userRoutes);

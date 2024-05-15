@@ -1,4 +1,4 @@
-const Skill = require('../models/Skill');
+const Skill = require('./SkillModel');
 
 exports.getSkills = async (req, res) => {
     try {

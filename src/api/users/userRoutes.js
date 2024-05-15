@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const usersController = require('../controllers/usersController');
+const usersController = require('./usersController');
 
 // Route pour la racine de l'API (GET)
 router.get('/', (req, res) => {

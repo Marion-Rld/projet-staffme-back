@@ -8,7 +8,6 @@ const skillSchema = new Schema({
 });
 
 const userSchema = new mongoose.Schema({
-    id: { type: Number, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, required: true },
     lastName: { type: String, required: true },

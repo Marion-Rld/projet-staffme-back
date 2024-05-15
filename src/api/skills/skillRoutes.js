@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const skillsController = require('../controllers/skillsController');
+const skillsController = require('./skillsController');
 
 // Route pour la racine de l'API (GET)
 router.get('/', (req, res) => {

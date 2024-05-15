@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const documentsController = require('../controllers/documentsController');
+const documentsController = require('./documentsController');
 
 // Route pour la racine de l'API (GET)
 router.get('/', (req, res) => {

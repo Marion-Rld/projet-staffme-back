@@ -20,7 +20,7 @@ database
 	});
 
 // Importez les routes définies dans apiRoutes.js
-const apiRoutes = require('./routes/apiRoutes');
+const apiRoutes = require('./src/api/main/apiRoutes');
 
 // Middleware pour analyser les corps de requête JSON
 app.use(express.json());

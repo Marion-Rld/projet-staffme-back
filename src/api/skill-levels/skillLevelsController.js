@@ -1,4 +1,4 @@
-const SkillLevel = require('../models/Skill_Level');
+const SkillLevel = require('./SkillLevelModel');
 
 exports.getSkillLevels = async (req, res) => {
     try {
