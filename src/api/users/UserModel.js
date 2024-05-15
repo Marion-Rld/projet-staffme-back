@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 // Définition du sous-schéma pour un objet skill
 const skillSchema = new Schema({
-    skill_id: { type: Number, required: true },
-    level_id: { type: Number, required: true },
+    skill_id: { type: Schema.Types.ObjectId, ref: 'Skill', required: true },
+    level_id: { type: Schema.Types.ObjectId, ref: 'SkillLevel', required: true },
 });
 
 const userSchema = new mongoose.Schema({
