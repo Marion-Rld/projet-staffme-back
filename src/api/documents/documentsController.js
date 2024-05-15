@@ -1,56 +1,49 @@
-const Document = require('./DocumentModel');
+const documentsService = require('./documentsService');
 
 exports.getDocuments = async (req, res) => {
     try {
-        const documents = await Document.find().populate('user');
+        const documents = await documentsService.getDocuments();
         res.json(documents);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send(error.message);
     }
 };
 
 exports.createDocument = async (req, res) => {
     try {
-        const document = new Document(req.body);
-        await document.save();
+        const document = await documentsService.createDocument(req.body);
         res.status(201).json(document);
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 };
 
 exports.getDocumentById = async (req, res) => {
     try {
-        const document = await Document.findById(req.params.id).populate('user');
-        if (!document) {
-            return res.status(404).send('No document found');
-        }
+        const document = await documentsService.getDocumentById(req.params.id);
+        if (!document) return res.status(404).send('No document found');
         res.json(document);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send(error.message);
     }
 };
 
 exports.updateDocument = async (req, res) => {
     try {
-        const document = await Document.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!document) {
-            return res.status(404).send('No document found');
-        }
+        const document = await documentsService.updateDocument(req.params.id, req.body);
+        if (!document) return res.status(404).send('No document found');
         res.json(document);
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 };
 
 exports.deleteDocument = async (req, res) => {
     try {
-        const document = await Document.findByIdAndDelete(req.params.id);
-        if (!document) {
-            return res.status(404).send('No document found');
-        }
+        const document = await documentsService.deleteDocument(req.params.id);
+        if (!document) return res.status(404).send('No document found');
         res.send('Document deleted');
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send(error.message);
     }
 };
