@@ -5,7 +5,8 @@ const Skill = require('../../src/api/skills/SkillModel');
 const SkillLevel = require('../../src/api/skill-levels/SkillLevelModel');
 const Project = require('../../src/api/projects/ProjectModel');
 const Document = require('../../src/api/documents/DocumentModel');
-require('dotenv').config( { path: './.env' } );
+const passwordUtils = require('../../src/api/users/auth/utils/passwordUtils');
+require('dotenv').config({ path: './.env' });
 
 const dbUrl = process.env.DATABASE_URL;
 
@@ -38,10 +39,10 @@ async function seedDatabase() {
       { name: 'Expert' }
     ]);
 
-    // Create users
+    // Create users with hashed passwords
     const users = await User.insertMany([
       {
-        password: "password123",
+        password: await passwordUtils.hashPassword("password123"),
         role: "admin",
         lastName: "Doe",
         firstName: "John",
@@ -58,7 +59,7 @@ async function seedDatabase() {
         documents: []
       },
       {
-        password: "securepass456",
+        password: await passwordUtils.hashPassword("securepass456"),
         role: "user",
         lastName: "Smith",
         firstName: "Jane",
@@ -75,7 +76,7 @@ async function seedDatabase() {
         documents: []
       },
       {
-        password: "mypassword789",
+        password: await passwordUtils.hashPassword("mypassword789"),
         role: "user",
         lastName: "Brown",
         firstName: "Alice",

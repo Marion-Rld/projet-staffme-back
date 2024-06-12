@@ -4,7 +4,7 @@ const { generateAuthToken } = require('./authMiddleware');
 
 const createUser = async (userData) => {
     const hashedPassword = await hashPassword(userData.password);
-    const newUser = await UserModel.create({...userData, password: hashedPassword});
+    const newUser = await UserModel.create({ ...userData, password: hashedPassword });
     return newUser;
 };
 
