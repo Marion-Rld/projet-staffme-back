@@ -20,5 +20,5 @@ exports.login = async (req, res) => {
 };
 
 exports.validateToken = (req, res) => {
-    res.status(200).send('Token is valid');
+  res.status(200).json({ message: 'Token is valid' });
 };
