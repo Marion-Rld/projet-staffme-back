@@ -18,3 +18,7 @@ exports.login = async (req, res) => {
         res.status(400).send('Identifiants invalides');
     }
 };
+
+exports.validateToken = (req, res) => {
+    res.status(200).send('Token is valid');
+};
