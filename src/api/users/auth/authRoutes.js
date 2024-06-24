@@ -6,5 +6,6 @@ const { authMiddleware } = require('./authMiddleware');
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/validate-token', authMiddleware, authController.validateToken);
+router.get('/is-admin', authMiddleware, authController.isAdmin);
 
 module.exports = router;

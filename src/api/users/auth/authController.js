@@ -22,3 +22,11 @@ exports.login = async (req, res) => {
 exports.validateToken = (req, res) => {
   res.status(200).json({ message: 'Token is valid' });
 };
+
+exports.isAdmin = (req, res) => {
+    if (req.user && req.user.role === 'admin') {
+      res.json({ isAdmin: true });
+    } else {
+      res.json({ isAdmin: false });
+    }
+  };
