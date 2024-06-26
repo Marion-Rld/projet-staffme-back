@@ -30,3 +30,11 @@ exports.isAdmin = (req, res) => {
       res.json({ isAdmin: false });
     }
   };
+
+  exports.isSuperAdmin = (req, res) => {
+    if (req.user && req.user.role === 'superadmin') {
+      res.json({ isSuperAdmin: true });
+    } else {
+      res.json({ isSuperAdmin: false });
+    }
+  };
