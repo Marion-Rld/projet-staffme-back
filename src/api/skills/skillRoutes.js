@@ -14,6 +14,4 @@ router.get('/skill/:id', skillsController.getSkillById);
 router.patch('/skill/:id', skillsController.updateSkill);
 router.delete('/skill/:id', skillsController.deleteSkill);
 
-// Autres routes ici...
-
 module.exports = router;

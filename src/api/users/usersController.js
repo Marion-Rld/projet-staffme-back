@@ -3,9 +3,42 @@ const Joi = require('joi');
 
 const validateUser = (user) => {
     const schema = Joi.object({
-        name: Joi.string().min(3).required(),
+        firstName: Joi.string().min(3).required(),
+        lastName: Joi.string().min(3).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
+        phoneNumber: Joi.string().optional(),
+        job: Joi.string().optional(),
+        gender: Joi.string().optional(),
+        postalAddress: Joi.string().optional(),
+        role: Joi.string().required().valid('user', 'admin', 'superadmin'),
+        skills: Joi.array().items(Joi.object({
+            skill_id: Joi.string().required(),
+            level_id: Joi.string().required(),
+        })).optional(),
+        teams: Joi.array().items(Joi.string()).optional(),
+        documents: Joi.array().items(Joi.string()).optional()
+    });
+    return schema.validate(user);
+};
+
+const validateUpdateUser = (user) => {
+    const schema = Joi.object({
+        firstName: Joi.string().min(3).optional(),
+        lastName: Joi.string().min(3).optional(),
+        email: Joi.string().email().optional(),
+        password: Joi.string().min(6).optional(),
+        phoneNumber: Joi.string().optional(),
+        job: Joi.string().optional(),
+        gender: Joi.string().optional(),
+        postalAddress: Joi.string().optional(),
+        role: Joi.string().optional().valid('user', 'admin', 'superadmin'),
+        skills: Joi.array().items(Joi.object({
+            skill_id: Joi.string().optional(),
+            level_id: Joi.string().optional(),
+        })).optional(),
+        teams: Joi.array().items(Joi.string()).optional(),
+        documents: Joi.array().items(Joi.string()).optional()
     });
     return schema.validate(user);
 };
@@ -42,7 +75,7 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-    const { error } = validateUser(req.body);
+    const { error } = validateUpdateUser(req.body);
     if (error) return res.status(400).send('Les données envoyées sont invalides');
 
     try {

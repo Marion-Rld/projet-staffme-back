@@ -23,139 +23,94 @@ async function seedDatabase() {
     await Document.deleteMany({});
 
     // Create skills
-    const skills = await Skill.insertMany([
-      { name: 'JavaScript' },
-      { name: 'Python' },
-      { name: 'Java' },
-      { name: 'Project Management' },
-      { name: 'Design' }
-    ]);
+    const skillNames = ['JavaScript', 'Python', 'Java', 'Project Management', 'Design', 'C++', 'Ruby', 'PHP', 'HTML', 'CSS', 'React', 'Angular', 'Vue', 'Node.js', 'Swift', 'Kotlin', 'SQL', 'NoSQL', 'AWS', 'Docker'];
+    const skills = await Skill.insertMany(skillNames.map(name => ({ name })));
 
     // Create skill levels
-    const skillLevels = await SkillLevel.insertMany([
-      { name: 'Beginner' },
-      { name: 'Intermediate' },
-      { name: 'Advanced' },
-      { name: 'Expert' }
-    ]);
+    const skillLevelNames = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+    const skillLevels = await SkillLevel.insertMany(skillLevelNames.map(name => ({ name })));
 
     // Create users with hashed passwords
-    const users = await User.insertMany([
-      {
-        password: await passwordUtils.hashPassword("password123"),
-        role: "admin",
-        lastName: "Doe",
-        firstName: "John",
-        email: "john.doe@example.com",
-        phoneNumber: "123-456-7890",
-        job: "Software Engineer",
-        gender: "male",
-        postalAddress: "123 Main St, Anytown, USA",
-        skills: [
-          { skill_id: skills[0]._id, level_id: skillLevels[2]._id },
-          { skill_id: skills[1]._id, level_id: skillLevels[1]._id }
-        ],
+    const userRoles = ['admin', 'user'];
+    const genders = ['male', 'female'];
+    const users = [];
+
+    for (let i = 0; i < 20; i++) {
+      const randomSkills = [
+        { skill_id: skills[Math.floor(Math.random() * skills.length)]._id, level_id: skillLevels[Math.floor(Math.random() * skillLevels.length)]._id }
+      ];
+      users.push({
+        password: await passwordUtils.hashPassword(`password${i + 1}`),
+        role: userRoles[Math.floor(Math.random() * userRoles.length)],
+        lastName: `LastName${i + 1}`,
+        firstName: `FirstName${i + 1}`,
+        email: `user${i + 1}@example.com`,
+        phoneNumber: `123-456-78${String(i).padStart(2, '0')}`,
+        job: `Job${i + 1}`,
+        gender: genders[Math.floor(Math.random() * genders.length)],
+        postalAddress: `${i + 1} Example St, Anytown, USA`,
+        skills: randomSkills,
         teams: [],
         documents: []
-      },
-      {
-        password: await passwordUtils.hashPassword("securepass456"),
-        role: "user",
-        lastName: "Smith",
-        firstName: "Jane",
-        email: "jane.smith@example.com",
-        phoneNumber: "987-654-3210",
-        job: "Project Manager",
-        gender: "female",
-        postalAddress: "456 Elm St, Othertown, USA",
-        skills: [
-          { skill_id: skills[3]._id, level_id: skillLevels[3]._id },
-          { skill_id: skills[4]._id, level_id: skillLevels[0]._id }
-        ],
-        teams: [],
-        documents: []
-      },
-      {
-        password: await passwordUtils.hashPassword("mypassword789"),
-        role: "user",
-        lastName: "Brown",
-        firstName: "Alice",
-        email: "alice.brown@example.com",
-        phoneNumber: "555-123-4567",
-        job: "Designer",
-        gender: "female",
-        postalAddress: "789 Maple Ave, Villagetown, USA",
-        skills: [
-          { skill_id: skills[4]._id, level_id: skillLevels[3]._id }
-        ],
-        teams: [],
-        documents: []
-      }
-    ]);
+      });
+    }
+    const createdUsers = await User.insertMany(users);
 
     // Create documents
-    const documents = await Document.insertMany([
-      {
-        name: "Resume",
-        type: "pdf",
-        url: "http://example.com/resume.pdf",
-        user: users[0]._id
-      },
-      {
-        name: "Project Plan",
-        type: "docx",
-        url: "http://example.com/project_plan.docx",
-        user: users[1]._id
-      },
-      {
-        name: "Design Mockup",
-        type: "png",
-        url: "http://example.com/design_mockup.png",
-        user: users[2]._id
-      }
-    ]);
+    const documentTypes = ['pdf', 'docx', 'png'];
+    const documents = [];
+
+    for (let i = 0; i < 20; i++) {
+      documents.push({
+        name: `Document${i + 1}`,
+        type: documentTypes[Math.floor(Math.random() * documentTypes.length)],
+        url: `http://example.com/document${i + 1}.${documentTypes[Math.floor(Math.random() * documentTypes.length)]}`,
+        user: createdUsers[i]._id
+      });
+    }
+    const createdDocuments = await Document.insertMany(documents);
 
     // Link documents to users
-    users[0].documents.push(documents[0]._id);
-    users[1].documents.push(documents[1]._id);
-    users[2].documents.push(documents[2]._id);
-    await users[0].save();
-    await users[1].save();
-    await users[2].save();
+    for (let i = 0; i < 20; i++) {
+      createdUsers[i].documents.push(createdDocuments[i]._id);
+      await createdUsers[i].save();
+    }
 
     // Create teams
-    const teams = await Team.insertMany([
-      { name: 'Development Team', users: [users[0]._id, users[1]._id], projects: [] },
-      { name: 'Design Team', users: [users[2]._id], projects: [] }
-    ]);
+    const teamNames = ['Development Team', 'Design Team', 'Marketing Team', 'Sales Team', 'Support Team'];
+    const teams = [];
+
+    for (let i = 0; i < 5; i++) {
+      teams.push({
+        name: teamNames[i],
+        users: createdUsers.slice(i * 4, (i + 1) * 4).map(user => user._id),
+        projects: []
+      });
+    }
+    const createdTeams = await Team.insertMany(teams);
 
     // Create projects
-    const projects = await Project.insertMany([
-      {
-        name: 'Project Alpha',
-        description: 'A software development project',
-        status: 'Ongoing',
-        startDate: new Date('2023-01-01'),
-        endDate: new Date('2023-12-31'),
-        budget: 100000,
-        teams: [teams[0]._id]
-      },
-      {
-        name: 'Project Beta',
-        description: 'A design project',
-        status: 'Planned',
-        startDate: new Date('2023-06-01'),
-        endDate: new Date('2024-05-31'),
-        budget: 50000,
-        teams: [teams[1]._id]
-      }
-    ]);
+    const projectNames = ['Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta', 'Project Epsilon'];
+    const projects = [];
+
+    for (let i = 0; i < 5; i++) {
+      projects.push({
+        name: projectNames[i],
+        description: `Description for ${projectNames[i]}`,
+        status: i % 2 === 0 ? 'Ongoing' : 'Planned',
+        startDate: new Date(`2023-0${i + 1}-01`),
+        endDate: new Date(`2024-0${i + 1}-01`),
+        budget: (i + 1) * 20000,
+        teams: [createdTeams[i]._id]
+      });
+    }
+    const createdProjects = await Project.insertMany(projects);
 
     // Link projects to teams
-    teams[0].projects.push(projects[0]._id);
-    teams[1].projects.push(projects[1]._id);
-    await teams[0].save();
-    await teams[1].save();
+    for (let i = 0; i < 5; i++) {
+      createdTeams[i].projects.push(createdProjects[i]._id);
+      await createdTeams[i].save();
+    }
 
     console.log('Data seeded successfully');
     mongoose.connection.close();

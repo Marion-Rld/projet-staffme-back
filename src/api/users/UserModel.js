@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Définition du sous-schéma pour un objet skill
 const skillSchema = new Schema({
     skill_id: { type: Schema.Types.ObjectId, ref: 'Skill', required: true },
     level_id: { type: Schema.Types.ObjectId, ref: 'SkillLevel', required: true },
@@ -9,7 +8,7 @@ const skillSchema = new Schema({
 
 const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
-    role: { type: String, required: true, default: 'user'},
+    role: { type: String, required: true, default: 'user' },
     lastName: { type: String, required: true },
     firstName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -18,8 +17,8 @@ const userSchema = new mongoose.Schema({
     gender: { type: String, required: false },
     postalAddress: { type: String, required: false },
     skills: { type: [skillSchema], required: false },
-    teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }], // Liaison avec les équipes
-    documents: [{ type: Schema.Types.ObjectId, ref: 'Document' }] // Liaison avec les documents
-});
+    teams: [{ type: Schema.Types.ObjectId, ref: 'Team', required: false }],
+    documents: [{ type: Schema.Types.ObjectId, ref: 'Document', required: false }]
+}, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
