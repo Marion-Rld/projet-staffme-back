@@ -1,5 +1,6 @@
 const User = require('./UserModel');
 const crudService = require('../common/crud/crudService');
+const { model } = require('mongoose');
 
 exports.getUsers = async () => {
     return await crudService.getAll(User);
@@ -10,7 +11,13 @@ exports.createUser = async (userData) => {
 };
 
 exports.getUserById = async (id) => {
-    return await crudService.getById(User, id);
+    return await crudService.getById(User, id).populate({
+        path: 'skills.skill_id',
+        model: 'Skill'
+    }).populate({
+        path: 'skills.level_id',
+        model: 'SkillLevel'
+    });
 };
 
 exports.updateUser = async (id, userData) => {
