@@ -35,6 +35,7 @@ app.use(cors({
     credentials: true
 }));
 
+app.use(express.csrf());
 app.use(helmet());
 app.disable('x-powered-by');
 
