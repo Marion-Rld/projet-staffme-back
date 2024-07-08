@@ -97,7 +97,7 @@ async function seedDatabase() {
       projects.push({
         name: projectNames[i],
         description: `Description for ${projectNames[i]}`,
-        status: i % 2 === 0 ? 'Ongoing' : 'Planned',
+        status: i % 2 === 0 ? 'in progress' : (i % 3 === 0 ? 'completed' : 'planned'),
         startDate: new Date(`2023-0${i + 1}-01`),
         endDate: new Date(`2024-0${i + 1}-01`),
         budget: (i + 1) * 20000,
