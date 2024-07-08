@@ -11,13 +11,7 @@ exports.createUser = async (userData) => {
 };
 
 exports.getUserById = async (id) => {
-    return await crudService.getById(User, id).populate({
-        path: 'skills.skill_id',
-        model: 'Skill'
-    }).populate({
-        path: 'skills.level_id',
-        model: 'SkillLevel'
-    });
+    return await crudService.getById(User, id)
 };
 
 exports.updateUser = async (id, userData) => {
