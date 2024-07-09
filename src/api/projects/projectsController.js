@@ -1,6 +1,14 @@
 const projectsService = require('./projectsService');
 const Joi = require('joi');
 
+const teamSchema = Joi.object({
+    _id: Joi.string().required(),
+    name: Joi.string().required(),
+    users: Joi.array().items(Joi.string()).required(),
+    projects: Joi.array().items(Joi.string()).required(),
+    __v: Joi.number().optional()
+  });
+
 const validateProject = (project) => {
     const schema = Joi.object({
         name: Joi.string().min(3).required(),
@@ -9,7 +17,7 @@ const validateProject = (project) => {
         startDate: Joi.date().required(),
         endDate: Joi.date().required(),
         budget: Joi.number().required(),
-        teams: Joi.array().items(Joi.string()).required(),
+        teams: Joi.array().items(teamSchema).required(),
     });
     return schema.validate(project);
 };
@@ -46,14 +54,18 @@ exports.getProjectById = async (req, res) => {
 };
 
 exports.updateProject = async (req, res) => {
+    console.log('Requête reçue:', req.body); 
     const { error } = validateProject(req.body);
-    if (error) return res.status(400).send('Les données envoyées sont invalides');
+    if (error) {
+        console.log("erreur de validation:", error.details)
+        return res.status(400).send('Les données envoyées sont invalides')};
 
     try {
         const project = await projectsService.updateProject(req.params.id, req.body);
         if (!project) return res.status(404).send('Le projet demandé n\'a pas été trouvé');
         res.json(project);
     } catch (error) {
+        console.error('Erreur lors de la mise à jour du projet:', error)
         res.status(400).send('Une erreur est survenue lors de la mise à jour du projet');
     }
 };
