@@ -2,11 +2,9 @@ const projectsService = require('./projectsService');
 const Joi = require('joi');
 
 const teamSchema = Joi.object({
-    _id: Joi.string().required(),
     name: Joi.string().required(),
     users: Joi.array().items(Joi.string()).required(),
     projects: Joi.array().items(Joi.string()).required(),
-    __v: Joi.number().optional()
   });
 
 const validateProject = (project) => {
