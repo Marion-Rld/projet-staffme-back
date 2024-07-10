@@ -16,51 +16,51 @@ exports.getDocuments = async (req, res) => {
         const documents = await documentsService.getDocuments();
         res.json(documents);
     } catch (error) {
-        res.status(500).send('Une erreur est survenue lors de la récupération des documents');
+        res.status(500).json({ message: 'Une erreur est survenue lors de la récupération des documents' });
     }
 };
 
 exports.createDocument = async (req, res) => {
     const { error } = validateDocument(req.body);
-    if (error) return res.status(400).send('Les données envoyées sont invalides');
+    if (error) return res.status(400).json({ message: 'Les données envoyées sont invalides' });
 
     try {
         const document = await documentsService.createDocument(req.body);
         res.status(201).json(document);
     } catch (error) {
-        res.status(400).send('Une erreur est survenue lors de la création du document');
+        res.status(400).json({ message: 'Une erreur est survenue lors de la création du document' });
     }
 };
 
 exports.getDocumentById = async (req, res) => {
     try {
         const document = await documentsService.getDocumentById(req.params.id);
-        if (!document) return res.status(404).send('Le document demandé n\'a pas été trouvé');
+        if (!document) return res.status(404).json({ message: 'Le document demandé n\'a pas été trouvé' });
         res.json(document);
     } catch (error) {
-        res.status(500).send('Une erreur est survenue lors de la récupération du document');
+        res.status(500).json({ message: 'Une erreur est survenue lors de la récupération du document' });
     }
 };
 
 exports.updateDocument = async (req, res) => {
     const { error } = validateDocument(req.body);
-    if (error) return res.status(400).send('Les données envoyées sont invalides');
+    if (error) return res.status(400).json({ message: 'Les données envoyées sont invalides' });
 
     try {
         const document = await documentsService.updateDocument(req.params.id, req.body);
-        if (!document) return res.status(404).send('Le document demandé n\'a pas été trouvé');
+        if (!document) return res.status(404).json({ message: 'Le document demandé n\'a pas été trouvé' });
         res.json(document);
     } catch (error) {
-        res.status(400).send('Une erreur est survenue lors de la mise à jour du document');
+        res.status(400).json({ message: 'Une erreur est survenue lors de la mise à jour du document' });
     }
 };
 
 exports.deleteDocument = async (req, res) => {
     try {
         const document = await documentsService.deleteDocument(req.params.id);
-        if (!document) return res.status(404).send('Le document demandé n\'a pas été trouvé');
-        res.send('Le document a été supprimé avec succès');
+        if (!document) return res.status(404).json({ message: 'Le document demandé n\'a pas été trouvé' });
+        res.status(200).json({ message: 'Le document a été supprimé avec succès' });
     } catch (error) {
-        res.status(500).send('Une erreur est survenue lors de la suppression du document');
+        res.status(500).json({ message: 'Une erreur est survenue lors de la suppression du document' });
     }
 };

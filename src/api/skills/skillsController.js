@@ -13,51 +13,51 @@ exports.getSkills = async (req, res) => {
         const skills = await skillsService.getSkills();
         res.json(skills);
     } catch (error) {
-        res.status(500).send('Une erreur est survenue lors de la récupération des compétences');
+        res.status(500).json({ message: 'Une erreur est survenue lors de la récupération des compétences' });
     }
 };
 
 exports.createSkill = async (req, res) => {
     const { error } = validateSkill(req.body);
-    if (error) return res.status(400).send('Les données envoyées sont invalides');
+    if (error) return res.status(400).json({ message: 'Les données envoyées sont invalides' });
 
     try {
         const skill = await skillsService.createSkill(req.body);
         res.status(201).json(skill);
     } catch (error) {
-        res.status(400).send('Une erreur est survenue lors de la création de la compétence');
+        res.status(400).json({ message: 'Une erreur est survenue lors de la création de la compétence' });
     }
 };
 
 exports.getSkillById = async (req, res) => {
     try {
         const skill = await skillsService.getSkillById(req.params.id);
-        if (!skill) return res.status(404).send('La compétence demandée n\'a pas été trouvée');
+        if (!skill) return res.status(404).json({ message: 'La compétence demandée n\'a pas été trouvée' });
         res.json(skill);
     } catch (error) {
-        res.status(500).send('Une erreur est survenue lors de la récupération de la compétence');
+        res.status(500).json({ message: 'Une erreur est survenue lors de la récupération de la compétence' });
     }
 };
 
 exports.updateSkill = async (req, res) => {
     const { error } = validateSkill(req.body);
-    if (error) return res.status(400).send('Les données envoyées sont invalides');
+    if (error) return res.status(400).json({ message: 'Les données envoyées sont invalides' });
 
     try {
         const skill = await skillsService.updateSkill(req.params.id, req.body);
-        if (!skill) return res.status(404).send('La compétence demandée n\'a pas été trouvée');
+        if (!skill) return res.status(404).json({ message: 'La compétence demandée n\'a pas été trouvée' });
         res.json(skill);
     } catch (error) {
-        res.status(400).send('Une erreur est survenue lors de la mise à jour de la compétence');
+        res.status(400).json({ message: 'Une erreur est survenue lors de la mise à jour de la compétence' });
     }
 };
 
 exports.deleteSkill = async (req, res) => {
     try {
         const skill = await skillsService.deleteSkill(req.params.id);
-        if (!skill) return res.status(404).send('La compétence demandée n\'a pas été trouvée');
-        res.send('La compétence a été supprimée avec succès');
+        if (!skill) return res.status(404).json({ message: 'La compétence demandée n\'a pas été trouvée' });
+        res.status(200).json({ message: 'La compétence a été supprimée avec succès' });
     } catch (error) {
-        res.status(500).send('Une erreur est survenue lors de la suppression de la compétence');
+        res.status(500).json({ message: 'Une erreur est survenue lors de la suppression de la compétence' });
     }
 };
