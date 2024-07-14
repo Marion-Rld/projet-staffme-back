@@ -1,12 +1,6 @@
 const projectsService = require('./projectsService');
 const Joi = require('joi');
 
-const teamSchema = Joi.object({
-    name: Joi.string().required(),
-    users: Joi.array().items(Joi.string()).required(),
-    projects: Joi.array().items(Joi.string()).required(),
-  });
-
 const validateProject = (project) => {
     const schema = Joi.object({
         name: Joi.string().min(3).required(),
@@ -15,10 +9,11 @@ const validateProject = (project) => {
         startDate: Joi.date().required(),
         endDate: Joi.date().required(),
         budget: Joi.number().required(),
-        teams: Joi.array().items(teamSchema).required(),
+        teams: Joi.array().items(Joi.string()).required(),
     });
     return schema.validate(project);
 };
+
 
 exports.getProjects = async (req, res) => {
     try {
