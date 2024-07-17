@@ -89,6 +89,16 @@ async function seedDatabase() {
     }
     const createdTeams = await Team.insertMany(teams);
 
+    // Link teams to users
+    for (let i = 0; i < 5; i++) {
+      const teamUsers = createdTeams[i].users;
+      for (const userId of teamUsers) {
+        const user = await User.findById(userId);
+        user.teams.push(createdTeams[i]._id);
+        await user.save();
+      }
+    }
+
     // Create projects
     const projectNames = ['Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta', 'Project Epsilon'];
     const projects = [];
