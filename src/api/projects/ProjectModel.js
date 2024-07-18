@@ -8,7 +8,7 @@ const projectSchema = new mongoose.Schema({
     startDate : { type: Date, required: true },
     endDate : { type: Date, required: true },
     budget : { type: Number, required: true },
-    teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }] // Liaison avec les équipes
+    teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }]
 });
 
 module.exports = mongoose.model('Project', projectSchema);
