@@ -5,6 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const crypto = require('crypto');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -34,11 +35,21 @@ app.use(cors({
 app.use(helmet());
 app.disable('x-powered-by');
 
-/*
 const { doubleCsrf } = require("csrf-csrf");
 
+// Générer le secret CSRF pour toutes les requêtes
+app.use((req, res, next) => {
+    let csrfSecret = req.cookies['csrfSecret'];
+    if (!csrfSecret) {
+        csrfSecret = crypto.randomBytes(32).toString('hex');
+        res.cookie('csrfSecret', csrfSecret, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    }
+    res.locals.csrfSecret = csrfSecret;
+    next();
+});
+
 const doubleCsrfOptions = {
-    getSecret: (req) => req.cookies['csrfSecret'],
+    getSecret: (req) => req.locals.csrfSecret,
     cookieName: "XSRF-TOKEN",
     cookieOptions: { httpOnly: true, secure: true, sameSite: 'Strict' },
     size: 64,
@@ -52,8 +63,7 @@ const {
     doubleCsrfProtection
 } = doubleCsrf(doubleCsrfOptions);
 
-app.use(doubleCsrfProtection);
-
+// Générer le token CSRF pour toutes les requêtes
 app.use((req, res, next) => {
     const token = generateToken(res, req);
     res.cookie('XSRF-TOKEN', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
@@ -61,7 +71,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// gestion de l'erreur CSRF
+// Protection CSRF pour les requêtes non ignorées
+app.use(doubleCsrfProtection);
+
+// Routes de l'API
+app.use('/api', apiRoutes);
+
+// Gestion des erreurs CSRF
 app.use((err, req, res, next) => {
     if (err && err.message && err.message.includes('invalid CSRF token')) {
         res.status(403).json({ message: 'Invalid CSRF token' });
@@ -71,10 +87,8 @@ app.use((err, req, res, next) => {
         });
     }
 });
-*/
 
-app.use('/api', apiRoutes);
-
+// Route non trouvée
 app.use((req, res, next) => {
     const error = new Error('Route non trouvée');
     error.status = 404;
