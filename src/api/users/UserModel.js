@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema({
     postalAddress: { type: String, required: false },
     skills: { type: [skillSchema], required: false },
     teams: [{ type: Schema.Types.ObjectId, ref: 'Team', required: false }],
-    documents: [{ type: Schema.Types.ObjectId, ref: 'Document', required: false }]
+    documents: [{ type: Schema.Types.ObjectId, ref: 'Document', required: false }],
+    resetPasswordToken: { type: String, required: false },
+    resetPasswordExpires: { type: Date, required: false },
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
