@@ -2,6 +2,7 @@ const authService = require('./authService');
 const crypto = require('crypto');
 const SibApiV3Sdk = require('@sendinblue/client');
 const User = require('../UserModel');
+const { hashPassword } = require('./utils/passwordUtils');
 
 exports.signup = async (req, res) => {
   try {
@@ -69,7 +70,7 @@ exports.forgotPassword = async (req, res) => {
     sendSmtpEmail.subject = 'Réinitialisation de votre mot de passe';
     sendSmtpEmail.textContent = `Vous recevez cet email car vous avez demandé la réinitialisation du mot de passe de votre compte.\n\n
                                  Veuillez cliquer sur le lien suivant ou le coller dans votre navigateur pour terminer le processus :\n\n
-                                 http://${req.headers.host}/reset/${resetToken}\n\n
+                                <p><a href="http://${req.headers.host}/api/auth-api/reset-password/${resetToken}" target="_blank">Réinitialiser mon mot de passe</a></p>
                                  Si vous n'avez pas demandé cela, veuillez ignorer cet email et votre mot de passe restera inchangé.\n`;
 
     await apiInstance.sendTransacEmail(sendSmtpEmail);
@@ -78,5 +79,58 @@ exports.forgotPassword = async (req, res) => {
   } catch (error) {
     console.error('Erreur dans forgotPassword:', error);
     res.status(500).json({ message: 'Erreur lors de l\'envoi de l\'email de réinitialisation' });
+  }
+};
+
+exports.getResetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Token de réinitialisation invalide ou expiré.' });
+    }
+
+    return res.redirect(`http://localhost:4200/reset-password/${token}`);
+  } catch (error) {
+    console.error('Erreur dans getResetPassword:', error);
+    res.status(500).json({ message: 'Une erreur est survenue lors de la vérification du token.' });
+  }
+};
+
+
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    // Trouver l'utilisateur avec le token valide
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Token de réinitialisation invalide ou expiré.' });
+    }
+
+    const hashedPassword = await hashPassword(newPassword); 
+
+    // Mettre à jour le mot de passe
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.json({ message: 'Votre mot de passe a été réinitialisé avec succès.' });
+  } catch (error) {
+    console.error('Erreur lors de la réinitialisation du mot de passe:', error);
+    res.status(500).json({ message: 'Une erreur est survenue lors de la réinitialisation du mot de passe.' });
   }
 };
