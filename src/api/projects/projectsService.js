@@ -5,6 +5,14 @@ exports.getProjects = async () => {
     return await crudService.getAll(Project, 'teams');
 };
 
+exports.getProjectsByTeamId = async (teamId) => {
+    try {
+        return await Project.find({ teams: teamId });
+    } catch (error) {
+        throw new Error('Erreur lors de la récupération des projets pour l\'équipe spécifiée');
+    }
+};
+
 exports.createProject = async (projectData) => {
     return await crudService.create(Project, projectData);
 };

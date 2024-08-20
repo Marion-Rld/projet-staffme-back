@@ -14,10 +14,17 @@ const validateProject = (project) => {
     return schema.validate(project);
 };
 
-
 exports.getProjects = async (req, res) => {
     try {
-        const projects = await projectsService.getProjects();
+        const teamId = req.query.teamId;
+        
+        let projects;
+        if (teamId) {
+            projects = await projectsService.getProjectsByTeamId(teamId);
+        } else {
+            projects = await projectsService.getProjects();
+        }
+
         res.json(projects);
     } catch (error) {
         res.status(500).json({ message: 'Une erreur est survenue lors de la récupération des projets' });
@@ -47,7 +54,6 @@ exports.getProjectById = async (req, res) => {
 };
 
 exports.updateProject = async (req, res) => {
-    console.log('Requête reçue:', req.body);
     const { error } = validateProject(req.body);
     if (error) {
         console.log("erreur de validation:", error.details);

@@ -14,7 +14,6 @@ mongoose.connect(dbUrl);
 
 async function seedDatabase() {
   try {
-    // Clear existing data
     await User.deleteMany({});
     await Team.deleteMany({});
     await Skill.deleteMany({});
@@ -22,15 +21,12 @@ async function seedDatabase() {
     await Project.deleteMany({});
     await Document.deleteMany({});
 
-    // Create skills
     const skillNames = ['JavaScript', 'Python', 'Java', 'Project Management', 'Design', 'C++', 'Ruby', 'PHP', 'HTML', 'CSS', 'React', 'Angular', 'Vue', 'Node.js', 'Swift', 'Kotlin', 'SQL', 'NoSQL', 'AWS', 'Docker'];
     const skills = await Skill.insertMany(skillNames.map(name => ({ name })));
 
-    // Create skill levels
     const skillLevelNames = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
     const skillLevels = await SkillLevel.insertMany(skillLevelNames.map(name => ({ name })));
 
-    // Create users with hashed passwords
     const userRoles = ['admin', 'user'];
     const genders = ['male', 'female'];
     const users = [];
@@ -50,13 +46,11 @@ async function seedDatabase() {
         gender: genders[Math.floor(Math.random() * genders.length)],
         postalAddress: `${i + 1} Example St, Anytown, USA`,
         skills: randomSkills,
-        teams: [],
         documents: []
       });
     }
     const createdUsers = await User.insertMany(users);
 
-    // Create documents
     const documentTypes = ['pdf', 'docx', 'png'];
     const documents = [];
 
@@ -70,13 +64,11 @@ async function seedDatabase() {
     }
     const createdDocuments = await Document.insertMany(documents);
 
-    // Link documents to users
     for (let i = 0; i < 20; i++) {
       createdUsers[i].documents.push(createdDocuments[i]._id);
       await createdUsers[i].save();
     }
 
-    // Create teams
     const teamNames = ['Development Team', 'Design Team', 'Marketing Team', 'Sales Team', 'Support Team'];
     const teams = [];
 
@@ -84,22 +76,10 @@ async function seedDatabase() {
       teams.push({
         name: teamNames[i],
         users: createdUsers.slice(i * 4, (i + 1) * 4).map(user => user._id),
-        projects: []
       });
     }
     const createdTeams = await Team.insertMany(teams);
 
-    // Link teams to users
-    for (let i = 0; i < 5; i++) {
-      const teamUsers = createdTeams[i].users;
-      for (const userId of teamUsers) {
-        const user = await User.findById(userId);
-        user.teams.push(createdTeams[i]._id);
-        await user.save();
-      }
-    }
-
-    // Create projects
     const projectNames = ['Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta', 'Project Epsilon'];
     const projects = [];
 
@@ -116,9 +96,8 @@ async function seedDatabase() {
     }
     const createdProjects = await Project.insertMany(projects);
 
-    // Link projects to teams
     for (let i = 0; i < 5; i++) {
-      createdTeams[i].projects.push(createdProjects[i]._id);
+      createdTeams[i].projects = [createdProjects[i]._id];
       await createdTeams[i].save();
     }
 
