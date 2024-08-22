@@ -31,7 +31,7 @@ async function seedDatabase() {
     const skillLevelNames = ['Débutant', 'Intermédiaire', 'Avancé', 'Expert'];
     const skillLevels = await SkillLevel.insertMany(skillLevelNames.map(name => ({ name })));
 
-    const userRoles = ['admin', 'utilisateur'];
+    const userRoles = ['admin', 'user'];
     const genders = ['homme', 'femme'];
     const users = [];
 
