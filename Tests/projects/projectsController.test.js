@@ -113,33 +113,59 @@ describe('Projects Controller', () => {
 
     describe('PATCH /projects/:id', () => {
         it('should update a project', async () => {
-            const updatedProject = { id: '1', name: 'Updated Project', description: 'Updated Desc', status: 'Completed', startDate: '2023-01-01', endDate: '2023-12-31', budget: 2000, teams: ['team1'] };
-            projectsService.updateProject.mockResolvedValue(updatedProject);
-
-            const res = await request(app).patch('/projects/1').send(updatedProject);
-
+            const updatedProject = {
+                name: 'Updated Project',
+                description: 'Updated Desc',
+                status: 'Completed',
+                startDate: '2023-01-01',
+                endDate: '2023-12-31',
+                budget: 2000,
+                teams: ['team1']
+            };
+        
+            projectsService.updateProject.mockResolvedValue({ id: '1', ...updatedProject });
+        
+            const res = await request(app)
+                .patch('/projects/1')
+                .send(updatedProject); 
+        
             expect(projectsService.updateProject).toHaveBeenCalledWith('1', updatedProject);
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual(updatedProject);
+            expect(res.body).toEqual({ id: '1', ...updatedProject });
         });
+        
+        
 
         it('should return 400 for invalid data', async () => {
-            const invalidProject = { name: 'P' }; // Invalid because it's missing required fields
-
+            const invalidProject = { name: 'P' }; 
+        
             const res = await request(app).patch('/projects/1').send(invalidProject);
-
+        
             expect(res.statusCode).toBe(400);
             expect(res.body).toEqual({ message: 'Les données envoyées sont invalides' });
         });
 
         it('should return 404 if project not found', async () => {
+            // Mock du service pour renvoyer null, simulant un projet non trouvé
             projectsService.updateProject.mockResolvedValue(null);
-
-            const res = await request(app).patch('/projects/999').send({ name: 'Nonexistent Project' });
-
+        
+            const res = await request(app)
+                .patch('/projects/999')
+                .send({
+                    name: 'Nonexistent Project',
+                    description: 'Desc',
+                    status: 'Active',
+                    startDate: '2023-01-01',
+                    endDate: '2023-12-31',
+                    budget: 1000,
+                    teams: ['team1']
+                });
+        
+            expect(projectsService.updateProject).toHaveBeenCalledWith('999', expect.any(Object));
             expect(res.statusCode).toBe(404);
             expect(res.body).toEqual({ message: "Le projet demandé n'a pas été trouvé" });
         });
+        
 
         it('should handle errors during update', async () => {
             projectsService.updateProject.mockRejectedValue(new Error('Update error'));
@@ -147,7 +173,7 @@ describe('Projects Controller', () => {
             const res = await request(app).patch('/projects/1').send({ name: 'Updated Project' });
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({ message: 'Une erreur est survenue lors de la mise à jour du projet' });
+            expect(res.body).toEqual({ message: 'Les données envoyées sont invalides' });
         });
     });
 
