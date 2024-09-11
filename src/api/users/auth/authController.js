@@ -64,13 +64,14 @@ exports.forgotPassword = async (req, res) => {
     let apiKey = apiInstance.authentications['apiKey'];
     apiKey.apiKey = process.env.BREVO_API_KEY;
 
+    const resetUrl = `${process.env.BASE_URL}/api/auth-api/reset-password/${resetToken}`;
     let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     sendSmtpEmail.to = [{ email: user.email }];
     sendSmtpEmail.sender = { email: 'rollando.marion@gmail.com', name: 'Support Staffme' };
     sendSmtpEmail.subject = 'Réinitialisation de votre mot de passe';
     sendSmtpEmail.textContent = `Vous recevez cet email car vous avez demandé la réinitialisation du mot de passe de votre compte.\n\n
                                  Veuillez cliquer sur le lien suivant ou le coller dans votre navigateur pour terminer le processus :\n\n
-                                <p><a href="http://${req.headers.host}/api/auth-api/reset-password/${resetToken}" target="_blank">Réinitialiser mon mot de passe</a></p>
+                                <p><a href="${resetUrl}" target="_blank">Réinitialiser mon mot de passe</a></p>
                                  Si vous n'avez pas demandé cela, veuillez ignorer cet email et votre mot de passe restera inchangé.\n`;
 
     await apiInstance.sendTransacEmail(sendSmtpEmail);
