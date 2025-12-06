@@ -25,7 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.6.1",
     "mongoose": "^8.3.4",
-    "nodemailer": "^6.9.14",
+    "nodemailer": "^7.0.11",
     "nodemailer-sendinblue-transport": "^2.0.1"
   },
   "devDependencies": {
